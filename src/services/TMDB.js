@@ -1,3 +1,14 @@
-import{createApi, fakeBaseQuery} from "@reduxjs/toolkit/query/react"
-const tbdbApiKey= process.env.REACT_APP_IMDB_KEY;
-export const tmdbApi=createApi({})
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+const tmdbApiKey = process.env.REACT_APP_TMDB_KEY;
+const page = 1;
+export const tmdbApi = createApi({
+  reducerPath: "tmdbApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://api.themoviedb.org/3" }),
+  endpoints: (builder) => ({
+    getMovies: builder.query({
+      query: () => `/movie/popular?page=${page}&api_key=${tmdbApiKey}`,
+    }),
+  }),
+});
+
+export const { useGetMoviesQuery } = tmdbApi;
