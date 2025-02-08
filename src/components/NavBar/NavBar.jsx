@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   IconButton,
@@ -19,12 +19,32 @@ import useStyles from "./navstyles";
 import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
 import Search from "../Search/Search";
+import { fetchToken, createSessionId, moviesApi } from "../../utils";
 function NavBar() {
   const classes = useStyles();
   const isMobile = useMediaQuery("(max-width:600px)");
   const theme = useTheme();
-  const isAuthenticated = true;
+  const isAuthenticated = false;
   const [mobileOpen, setMobileOpen] = useState(false);
+  const token = localStorage.getItem("request_token");
+  const sessionIdFromLocalStorage = localStorage.getItem("session_id");
+  useEffect(() => {
+    const logInUser = async () => {
+      if (token) {
+        if (sessionIdFromLocalStorage) {
+          const { data: userData } = await moviesApi.get(
+            `/account?session_id=${sessionIdFromLocalStorage}`
+          );
+        } else {
+          const sessionId = await createSessionId();
+          const { data: userData } = await moviesApi.get(
+            `/account?session_id=${sessionId}`
+          );
+        }
+      }
+    };
+    logInUser();
+  }, [token]);
   return (
     <>
       <AppBar position="fixed">
@@ -47,7 +67,7 @@ function NavBar() {
 
           <div>
             {!isAuthenticated ? (
-              <Button color="inherit" onClick={() => {}}>
+              <Button color="inherit" onClick={fetchToken}>
                 Login &nbsp; <AccountCircle />
               </Button>
             ) : (
