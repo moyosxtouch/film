@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import MovieList from "../MovieList/MovieList";
 import { useSelector } from "react-redux";
+import Pagination from "../Pagination/Pagination";
 const Movies = () => {
   const [page, setPage] = useState(1);
   const { genreIdOrCategoryName, searchQuery } = useSelector(
@@ -41,6 +42,11 @@ const Movies = () => {
   return (
     <div>
       <MovieList movies={data} />
+      <Pagination
+        currentPage={page}
+        setPage={setPage}
+        totalPages={data.total_page}
+      />
     </div>
   );
 };
