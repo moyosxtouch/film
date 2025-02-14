@@ -20,12 +20,15 @@ import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
 import Search from "../Search/Search";
 import { fetchToken, createSessionId, moviesApi } from "../../utils";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, userSelector } from "../../features/auth";
 function NavBar() {
   const classes = useStyles();
   const isMobile = useMediaQuery("(max-width:600px)");
   const theme = useTheme();
-  const isAuthenticated = false;
+  const { isAuthenticated, user } = useSelector(userSelector);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const dispatch = useDispatch();
   const token = localStorage.getItem("request_token");
   const sessionIdFromLocalStorage = localStorage.getItem("session_id");
   useEffect(() => {
@@ -35,11 +38,13 @@ function NavBar() {
           const { data: userData } = await moviesApi.get(
             `/account?session_id=${sessionIdFromLocalStorage}`
           );
+          dispatch(setUser(userData));
         } else {
           const sessionId = await createSessionId();
           const { data: userData } = await moviesApi.get(
             `/account?session_id=${sessionId}`
           );
+          dispatch(setUser(userData));
         }
       }
     };
@@ -74,11 +79,11 @@ function NavBar() {
               <Button
                 color="inherit"
                 component={Link}
-                to={`/profile/:id`}
+                to={`/profile/${user.id}`}
                 className={classes.linkButton}
                 onClick={() => {}}
               >
-                {!isMobile && <> My Movies &nbsp; </>}
+                {!isMobile && <> {user.username} &nbsp; </>}
                 <Avatar
                   style={{ width: 30, height: 30 }}
                   alt="Profile Image"
