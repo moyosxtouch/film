@@ -9,6 +9,7 @@ import {
 import MovieList from "../MovieList/MovieList";
 import { useSelector } from "react-redux";
 import Pagination from "../Pagination/Pagination";
+import FeaturedMovie from "../FeaturedMovie/FeatureMovie";
 const Movies = () => {
   const [page, setPage] = useState(1);
   const { genreIdOrCategoryName, searchQuery } = useSelector(
@@ -41,6 +42,7 @@ const Movies = () => {
   if (error) return "An Error has Ocurred";
   return (
     <div>
+      <FeaturedMovie movie={data.results[0]} />
       <MovieList movies={data} />
       <Pagination
         currentPage={page}

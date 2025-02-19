@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Divider,
   List,
@@ -34,6 +34,9 @@ const Sidebar = ({ setMobileOpen }) => {
   const { genreIdOrCategoryName } = useSelector(
     (state) => state.currentGenreOrCategory
   );
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [genreIdOrCategoryName]);
   return (
     <>
       <Link to="/" className={classes.imageLink}>
